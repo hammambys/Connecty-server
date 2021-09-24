@@ -5,6 +5,7 @@ const { UserInputError } = require("apollo-server");
 const {
   validateRegisterInput,
   validateLoginInput,
+  validateForgetpwdInput,
 } = require("../../util/validators");
 const { SECRET_KEY } = require("../../config");
 const User = require("../../models/User");
@@ -94,6 +95,31 @@ module.exports = {
         ...res._doc,
         id: res._id,
         token,
+      };
+    },
+    async findpwd(_, { email }) {
+      const { errors, valid } = validateForgetpwdInput(email);
+
+      if (!valid) {
+        throw new UserInputError("Errors", { errors });
+      }
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        errors.general = "User not found";
+        throw new UserInputError("User not found", { errors });
+      }
+
+      const password = user.password;
+
+      const token = generateToken(user);
+
+      return {
+        ...user._doc,
+        id: user._id,
+        token,
+        password,
       };
     },
   },
