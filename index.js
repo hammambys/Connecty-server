@@ -27,3 +27,5 @@ mongoose
   .catch((err) => {
     console.error(err);
   });
+
+window.alert("server running");
