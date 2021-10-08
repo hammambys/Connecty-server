@@ -28,4 +28,3 @@ mongoose
     console.error(err);
   });
 
-window.alert("server running");
